@@ -1,25 +1,26 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config(); // Carrega as variáveis do arquivo .env
-
-const conectarBanco = require('./database'); // Importa o nosso arquivo de conexão
+require('dotenv').config(); 
+const conectarBanco = require('./database'); 
 
 const app = express();
 
-// Middlewares essenciais
 app.use(cors());
 app.use(express.json());
 
-// Inicia a conexão com o MongoDB
 conectarBanco();
 
-// Rota de teste
+const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
+
 app.get('/api/teste', (req, res) => {
-    res.json({ mensagem: "A API ESTA CONECTADA" });
+    res.json({ mensagem: "A API do portfólio está viva e conectada!" });
 });
 
-// Iniciando o servidor
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor rodando na porta ${PORT}`);
+    console.log(`Servidor rodando na porta ${PORT}`);
 });
+
+const receitaRoutes = require('./routes/receitaRoutes');
+app.use('/api/receitas', receitaRoutes);
