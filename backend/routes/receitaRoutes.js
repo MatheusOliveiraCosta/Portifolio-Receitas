@@ -1,22 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const receitaController = require('../controllers/receitaController');
+const { verificarToken } = require('../middlewares/authMiddleware');
 
-//segurança
-const { verificarToken, verificarAdmin } = require('../middlewares/authMiddleware');
+//ROTA PÚBLICA
+router.get('/', receitaController.listarReceitas);
 
-//ROTA PÚBLIC
-router.get('/', (req, res) => {
-    res.json({ mensagem: 'Lista de todas as receitas vista pelo público' });
-});
-
-//ROTA PROTEGIDA
-router.post('/', verificarToken, (req, res) => {
-    res.json({ mensagem: `Receita criada pelo usuário de ID: ${req.usuario.id}` });
-});
-
-//ROTA RESTRITA
-router.delete('/apagar-tudo', verificarToken, verificarAdmin, (req, res) => {
-    res.json({ mensagem: 'Todas as receitas do sistema foram apagadas pelo Admin!' });
-});
+//ROTAS PROTEGIDAS
+router.post('/', verificarToken, receitaController.criarReceita);
+router.put('/:id', verificarToken, receitaController.atualizarReceita);
+router.delete('/:id', verificarToken, receitaController.deletarReceita);
 
 module.exports = router;

@@ -24,3 +24,12 @@ app.listen(PORT, () => {
 
 const receitaRoutes = require('./routes/receitaRoutes');
 app.use('/api/receitas', receitaRoutes);
+
+const adminRoutes = require('./routes/adminRoutes');
+app.use('/api/admin', adminRoutes);
+
+const alunoRoutes = require('./routes/alunoRoutes');
+app.use('/api/alunos', alunoRoutes);
+
+const relatorioRoutes = require('./routes/relatorioRoutes');
+app.use('/api/relatorios', relatorioRoutes);

@@ -1,16 +1,11 @@
 const mongoose = require('mongoose');
 
-const categoriaSchema = new mongoose.Schema({
-    nome: { type: String, required: true, unique: true }
+const CategoriaSchema = new mongoose.Schema({
+    nome: { 
+        type: String, 
+        required: true, 
+        unique: true // Não deixa criar duas categorias com o mesmo nome
+    }
 });
 
-module.exports = mongoose.model('Categoria', categoriaSchema);
-
-// models/Habilidade.js
-const mongoose = require('mongoose');
-
-const habilidadeSchema = new mongoose.Schema({
-    nome: { type: String, required: true, unique: true }
-});
-
-module.exports = mongoose.model('Habilidade', habilidadeSchema);
+module.exports = mongoose.model('Categoria', CategoriaSchema);
