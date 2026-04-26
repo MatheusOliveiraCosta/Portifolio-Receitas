@@ -33,3 +33,6 @@ app.use('/api/alunos', alunoRoutes);
 
 const relatorioRoutes = require('./routes/relatorioRoutes');
 app.use('/api/relatorios', relatorioRoutes);
+
+const publicRoutes = require('./routes/publicRoutes');
+app.use('/api/publico', publicRoutes);
