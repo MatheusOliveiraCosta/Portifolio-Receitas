@@ -1,4 +1,4 @@
-# Portifolio-Receitas - Plataforma Colaborativa de Receitas
+# Portifolio-Receitas - Plataforma Colaborativa
 
 Um sistema Full-Stack desenvolvido para gerenciamento e compartilhamento de receitas entre alunos. O sistema conta com controle de acesso, painel de administração e sistema de colaboração mútua, permitindo que vários alunos sejam co-autores de uma mesma receita.
 
@@ -81,7 +81,7 @@ Acesse o link gerado (http://localhost:5173) no seu navegador.
 Como o banco de dados da nova máquina estará zerado, você precisa criar o usuário Administrador via Postman para liberar o sistema.
 
 Com o Back-end rodando, abra o Postman.
-Crie uma requisição POST para http://localhost:3000/auth/registrar (ajuste a rota conforme o seu código).
+Crie uma requisição POST para http://localhost:3000/api/auth/registrar (ajuste a rota conforme o seu código).
 No corpo (Body > raw > JSON), envie:
 ```JSON
 {
