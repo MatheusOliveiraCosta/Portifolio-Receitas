@@ -19,7 +19,7 @@ Antes de começar, você precisa ter as seguintes ferramentas instaladas no seu 
 
 ---
 
-## 🚀 Passo a Passo de Instalação
+## 🚀 Passo a Passo de USO
 
 ### 1. Clonar ou copiar o projeto
 Baixe a pasta do projeto para o novo computador e abra o repositório no seu editor de código (ex: VS Code).
