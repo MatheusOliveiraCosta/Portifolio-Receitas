@@ -3,6 +3,7 @@ const router = express.Router();
 const receitaController = require('../controllers/receitaController');
 const { verificarToken } = require('../middlewares/authMiddleware');
 
+
 //ROTA PÚBLICA
 router.get('/', receitaController.listarReceitas);
 

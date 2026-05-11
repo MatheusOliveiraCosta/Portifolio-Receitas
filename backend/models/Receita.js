@@ -11,9 +11,10 @@ const ReceitaSchema = new mongoose.Schema({
     }],
     
     autores: [{ 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Usuario' 
-    }]
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Usuario',
+    required: true
+}],
 });
 
 module.exports = mongoose.model('Receita', ReceitaSchema);

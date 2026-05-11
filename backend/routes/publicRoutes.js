@@ -58,4 +58,15 @@ router.get('/relatorio', async (req, res) => {
     }
 });
 
+// Rota para listar alunos no formulário de receitas
+router.get('/alunos', async (req, res) => {
+    try {
+        // Busca apenas quem tem o perfil de ALUNO e retorna só o nome e email (por segurança)
+        const alunos = await Usuario.find({ tipo_perfil: 'ALUNO' }).select('nome email');
+        res.json(alunos);
+    } catch (erro) {
+        res.status(500).json({ erro: 'Erro ao buscar lista de alunos' });
+    }
+});
+
 module.exports = router;

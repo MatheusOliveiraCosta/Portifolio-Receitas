@@ -1,16 +1,23 @@
 const Receita = require('../models/Receita');
 
-//(Create)
+// (Create)
 exports.criarReceita = async (req, res) => {
     try {
-        const { nome, descricao, link_externo, categorias } = req.body;
+    
+        const { nome, descricao, link_externo, categorias, autores } = req.body;
         
+        let listaFinalDeAutores = autores || [];
+
+        if (!listaFinalDeAutores.includes(req.usuario.id)) {
+            listaFinalDeAutores.push(req.usuario.id);
+        }
+
         const novaReceita = new Receita({
             nome,
             descricao,
             link_externo,
             categorias,
-            autores: [req.usuario.id] 
+            autores: listaFinalDeAutores 
         });
 
         await novaReceita.save();
@@ -20,13 +27,10 @@ exports.criarReceita = async (req, res) => {
     }
 };
 
-//(Read)
+// (Read)
 exports.listarReceitas = async (req, res) => {
     try {
-        //Pega a categoria da URL
         const categoriaId = req.query.categoria;
-
-        //caixa de pesquisa
         let filtroDeBusca = {}; 
 
         if (categoriaId) {
@@ -34,7 +38,8 @@ exports.listarReceitas = async (req, res) => {
         }
 
         const receitas = await Receita.find(filtroDeBusca)
-            .populate('autores', 'nome email');
+            .populate('autores', 'nome email') 
+            .populate('categorias', 'nome');
 
         res.json(receitas);
     } catch (erro) {
@@ -42,7 +47,7 @@ exports.listarReceitas = async (req, res) => {
     }
 };
 
-//(Update)
+// (Update)
 exports.atualizarReceita = async (req, res) => {
     try {
         const receita = await Receita.findById(req.params.id);
@@ -51,12 +56,11 @@ exports.atualizarReceita = async (req, res) => {
             return res.status(404).json({ erro: 'Receita não encontrada' });
         }
 
-        //verifica se é o admin
-        const ehAutor = receita.autores.includes(req.usuario.id);
+        const ehAutor = receita.autores.some(id => id.toString() === req.usuario.id);
         const ehAdmin = req.usuario.tipo_perfil === 'ADMIN';
 
         if (!ehAutor && !ehAdmin) {
-            return res.status(403).json({ erro: 'Ação não permitida. Você não é o dono desta receita.' });
+            return res.status(403).json({ erro: 'Ação não permitida. Você não é um dos responsáveis.' });
         }
 
         const receitaAtualizada = await Receita.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -67,7 +71,7 @@ exports.atualizarReceita = async (req, res) => {
     }
 };
 
-//(Delete)
+// (Delete)
 exports.deletarReceita = async (req, res) => {
     try {
         const receita = await Receita.findById(req.params.id);
@@ -76,12 +80,12 @@ exports.deletarReceita = async (req, res) => {
             return res.status(404).json({ erro: 'Receita não encontrada' });
         }
 
-        //TRAVA
-        const ehAutor = receita.autores.includes(req.usuario.id);
+        // Mesma trava: qualquer um dos autores responsáveis pode deletar
+        const ehAutor = receita.autores.some(id => id.toString() === req.usuario.id);
         const ehAdmin = req.usuario.tipo_perfil === 'ADMIN';
 
         if (!ehAutor && !ehAdmin) {
-            return res.status(403).json({ erro: 'Ação não permitida. Você não é o dono desta receita.' });
+            return res.status(403).json({ erro: 'Ação não permitida.' });
         }
 
         await Receita.findByIdAndDelete(req.params.id);

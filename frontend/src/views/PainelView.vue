@@ -11,9 +11,15 @@
         
         <div v-if="aluno.habilidades && aluno.habilidades.length > 0">
           <ul class="lista-habilidades">
-            <li v-for="item in aluno.habilidades" :key="item._id">
-              <span><strong>{{ item.habilidade?.nome }}</strong></span>
-              <span class="nota">Nível: {{ item.nivel }}/10</span>
+            <li v-for="item in aluno.habilidades" :key="item._id" class="item-lista">
+              <div>
+                <span><strong>{{ item.habilidade?.nome }}</strong></span>
+                <span class="nota">Nível: {{ item.nivel }}/10</span>
+              </div>
+              <div class="acoes">
+                <button @click="editarHabilidade(item)" class="btn-edit">✏️</button>
+                <button @click="deletarHabilidade(item.habilidade._id)" class="btn-del">🗑️</button>
+              </div>
             </li>
           </ul>
         </div>
@@ -41,10 +47,14 @@
         <div v-if="minhasReceitas.length > 0">
           <ul class="lista-habilidades">
             <li v-for="receita in minhasReceitas" :key="receita._id" class="item-receita">
-              <div>
+              <div style="flex: 1;">
                 <strong>{{ receita.nome }}</strong>
                 <p class="desc-receita">{{ receita.descricao }}</p>
                 <a v-if="receita.link_externo" :href="receita.link_externo" target="_blank" class="link-receita">Acessar Link</a>
+              </div>
+              <div class="acoes mt-10">
+                <button @click="prepararEdicao(receita)" class="btn-edit">✏️ Editar</button>
+                <button @click="deletarReceita(receita._id)" class="btn-del">🗑️ Excluir</button>
               </div>
             </li>
           </ul>
@@ -64,9 +74,17 @@
             </label>
           </div>
           
+          <div class="selecao-categorias mt-10">
+            <p><strong>Colegas (Co-autores):</strong></p>
+            <label v-for="colega in listaColegas" :key="colega._id" class="check-categoria">
+              <input type="checkbox" :value="colega._id" v-model="novaReceita.autores" />
+              {{ colega.nome }}
+            </label>
+          </div>
+          
           <div class="botoes-form mt-10">
             <button @click="salvarReceita" class="btn-salvar">Salvar Receita</button>
-            <button @click="mostrarFormReceita = false" class="btn-cancelar">Cancelar</button>
+            <button @click="cancelarEdicaoReceita" class="btn-cancelar">Cancelar</button>
           </div>
         </div>
 
@@ -83,6 +101,7 @@ import api from '../services/api';
 
 const router = useRouter();
 const aluno = ref({}); 
+const listaColegas = ref([]);
 
 // Lógica de Habilidades
 const mostrarFormHabilidade = ref(false);
@@ -98,8 +117,10 @@ const novaReceita = ref({
   nome: '',
   descricao: '',
   link_externo: '',
-  categorias: [] // Array para suportar múltiplas seleções
+  categorias: [],
+  autores: []
 });
+const receitaEmEdicaoId = ref(null);
 
 // Carrega o Perfil e depois as Receitas
 const carregarPerfil = async () => {
@@ -128,12 +149,39 @@ const carregarMinhasReceitas = async () => {
 
 const abrirFormularioReceita = async () => {
   try {
-    const resposta = await api.get('/publico/categorias');
-    listaCategorias.value = resposta.data;
+    // Busca categorias e alunos ao mesmo tempo!
+    // (Atenção: verifique se a rota '/admin/alunos' é permitida para os alunos lerem no seu back-end,
+    // se der erro de permissão, você pode precisar criar uma rota pública para listar os nomes).
+    const [resCategorias, resAlunos] = await Promise.all([
+      api.get('/publico/categorias'),
+      api.get('/publico/alunos')
+    ]);
+    
+    listaCategorias.value = resCategorias.data;
+    
+    // Salva a lista de alunos, mas tira o próprio aluno logado para ele não marcar a si mesmo
+    listaColegas.value = resAlunos.data.filter(a => a._id !== aluno.value._id);
+    
     mostrarFormReceita.value = true;
   } catch (erro) {
-    alert('Erro ao carregar lista de categorias.');
+    alert('Erro ao carregar dados do formulário.');
   }
+};
+
+const prepararEdicao = async (receita) => {
+  await abrirFormularioReceita(); // Primeiro carrega as categorias e os alunos do banco
+  
+  receitaEmEdicaoId.value = receita._id; // Avisa o sistema que é uma edição
+  
+  // Preenche os campos com os dados da receita clicada
+  novaReceita.value = {
+    nome: receita.nome,
+    descricao: receita.descricao,
+    link_externo: receita.link_externo,
+    // Extrai só os IDs para as caixinhas (checkbox) ficarem marcadas automaticamente
+    categorias: receita.categorias ? receita.categorias.map(c => c._id) : [],
+    autores: receita.autores ? receita.autores.map(a => a._id) : []
+  };
 };
 
 const salvarReceita = async () => {
@@ -142,16 +190,37 @@ const salvarReceita = async () => {
   }
   
   try {
-    await api.post('/receitas', novaReceita.value);
+    if (receitaEmEdicaoId.value) {
+      // Se a variável tem um ID, fazemos um PUT (Requisito 1.5 - Editar)
+      await api.put(`/receitas/${receitaEmEdicaoId.value}`, novaReceita.value);
+    } else {
+      // Se está vazia, fazemos um POST (Criar nova)
+      await api.post('/receitas', novaReceita.value);
+    }
     
-    // Reseta o formulário e esconde
-    novaReceita.value = { nome: '', descricao: '', link_externo: '', categorias: [] };
-    mostrarFormReceita.value = false;
-    
-    // Atualiza a lista na tela
-    carregarMinhasReceitas();
+    cancelarEdicaoReceita(); // Limpa e fecha o formulário
+    carregarMinhasReceitas(); // Atualiza a lista na tela
   } catch (erro) {
     alert(erro.response?.data?.erro || 'Erro ao salvar receita');
+  }
+};
+
+const cancelarEdicaoReceita = () => {
+  // Limpa tudo e sai do modo de edição
+  novaReceita.value = { nome: '', descricao: '', link_externo: '', categorias: [], autores: [] };
+  receitaEmEdicaoId.value = null; 
+  mostrarFormReceita.value = false;
+};
+
+const deletarReceita = async (id) => {
+  // Requisito 1.5 - Excluir
+  if (!confirm('Tem certeza que deseja excluir esta receita para sempre?')) return;
+  
+  try {
+    await api.delete(`/receitas/${id}`);
+    carregarMinhasReceitas(); // Atualiza a lista na tela após deletar
+  } catch (erro) {
+    alert(erro.response?.data?.erro || 'Erro ao excluir receita.');
   }
 };
 
@@ -179,6 +248,29 @@ const salvarHabilidade = async () => {
     carregarPerfil();
   } catch (erro) {
     alert(erro.response?.data?.erro || 'Erro ao salvar habilidade');
+  }
+};
+
+const editarHabilidade = async (item) => {
+  const novoNivel = prompt(`Digite o novo nível (0 a 10) para ${item.habilidade.nome}:`, item.nivel);
+  if (novoNivel === null || novoNivel === '') return;
+  
+  try {
+    // Atualiza enviando a nova nota
+    await api.put(`/alunos/habilidades/${item.habilidade._id}`, { nivel: Number(novoNivel) });
+    carregarPerfil();
+  } catch (erro) {
+    alert('Erro ao atualizar habilidade.');
+  }
+};
+
+const deletarHabilidade = async (idHabilidade) => {
+  if (!confirm('Tem certeza que deseja remover esta habilidade?')) return;
+  try {
+    await api.delete(`/alunos/habilidades/${idHabilidade}`);
+    carregarPerfil();
+  } catch (erro) {
+    alert('Erro ao remover habilidade.');
   }
 };
 
