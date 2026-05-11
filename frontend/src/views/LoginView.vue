@@ -41,18 +41,19 @@ const fazerLogin = async () => {
     carregando.value = true;
     erro.value = '';
     
-    // Bate na rota de login do seu Node.js
     const resposta = await api.post('/auth/login', {
       email: email.value,
       senha: senha.value
     });
 
-    // Salva o token no navegador
     localStorage.setItem('token', resposta.data.token);
     
-    // Descobre se é Aluno ou Admin (podemos extrair isso do JWT depois, mas por hora vamos pelo email)
-    // Redireciona para o painel (vamos criar essa tela no próximo passo)
-    router.push('/painel'); 
+    // Verifica se é o email do chefe!
+    if (email.value === 'admin@utfpr.edu.br') { // ⚠️ COLOQUE O SEU E-MAIL DE ADMIN AQUI
+      router.push('/admin'); 
+    } else {
+      router.push('/painel'); 
+    }
 
   } catch (err) {
     erro.value = err.response?.data?.erro || 'Erro ao conectar com o servidor.';
