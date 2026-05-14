@@ -43,9 +43,9 @@ npm install
 Crie um arquivo chamado .env dentro da pasta backend/ e adicione as suas credenciais. Exemplo:
 
 ```Snippet de código
+MONGO_URI=mongodb://127.0.0.1:27017/portfolio_receitas
 PORT=3000
-MONGODB_URI=mongodb://127.0.0.1:27017/banco_receitas
-JWT_SECRET=sua_chave_secreta_super_segura
+JWT_SECRET=minha_chave_secreta_super_segura_123
 ```
 ## Como rodar o sistema (SIGA A ORDEM)
 
