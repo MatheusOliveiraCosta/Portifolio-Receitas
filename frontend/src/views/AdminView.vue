@@ -1,19 +1,19 @@
 <template>
   <div class="admin-container">
     <header class="cabecalho-admin">
-      <h2>👑 Painel do Administrador</h2>
+      <h2>Painel do Administrador</h2>
       <button @click="sair" class="btn-sair">Sair do Sistema</button>
     </header>
 
     <main class="conteudo">
       <!-- Sistema de Abas -->
       <div class="abas">
-        <button :class="{ ativo: abaAtual === 'alunos' }" @click="mudarAba('alunos')">🎓 Alunos</button>
-        <button :class="{ ativo: abaAtual === 'categorias' }" @click="mudarAba('categorias')">🏷️ Categorias</button>
-        <button :class="{ ativo: abaAtual === 'habilidades' }" @click="mudarAba('habilidades')">⭐ Habilidades</button>
+        <button :class="{ ativo: abaAtual === 'alunos' }" @click="mudarAba('alunos')">Alunos</button>
+        <button :class="{ ativo: abaAtual === 'categorias' }" @click="mudarAba('categorias')">Categorias</button>
+        <button :class="{ ativo: abaAtual === 'habilidades' }" @click="mudarAba('habilidades')">Habilidades</button>
       </div>
 
-      <!-- ================= ABA DE ALUNOS ================= -->
+      //Alunos
       <section v-if="abaAtual === 'alunos'" class="cartao">
         <h3>Gerenciar Alunos</h3>
         <div class="form-rapido">
@@ -33,7 +33,7 @@
         </ul>
       </section>
 
-      <!-- ================= ABA DE CATEGORIAS ================= -->
+      //Categorias
       <section v-if="abaAtual === 'categorias'" class="cartao">
         <h3>Gerenciar Categorias</h3>
         <div class="form-rapido">
@@ -52,7 +52,7 @@
         </ul>
       </section>
 
-      <!-- ================= ABA DE HABILIDADES ================= -->
+      //Habilidades
       <section v-if="abaAtual === 'habilidades'" class="cartao">
         <h3>Gerenciar Habilidades</h3>
         <div class="form-rapido">
@@ -92,7 +92,7 @@ const formAluno = ref({ nome: '', email: '', senha: '' });
 const novaCategoriaNome = ref('');
 const novaHabilidadeNome = ref('');
 
-// ================= NAVEGAÇÃO E CARREGAMENTO =================
+//Carregar dados
 const mudarAba = (aba) => {
   abaAtual.value = aba;
   carregarDados();
@@ -115,7 +115,7 @@ const carregarDados = async () => {
   }
 };
 
-// ================= CRUD ALUNOS =================
+//CRUD alunos
 const criarAluno = async () => {
   if (!formAluno.value.nome || !formAluno.value.email || !formAluno.value.senha) return alert('Preencha tudo!');
   try {
@@ -133,7 +133,7 @@ const deletarAluno = async (id) => {
   } catch (erro) { alert('Erro ao deletar aluno.'); }
 };
 
-// ================= CRUD CATEGORIAS =================
+//CRUD categorias 
 const criarCategoria = async () => {
   if (!novaCategoriaNome.value) return;
   try {
@@ -160,7 +160,7 @@ const deletarCategoria = async (id) => {
   } catch (erro) { alert('Erro ao deletar categoria.'); }
 };
 
-// ================= CRUD HABILIDADES =================
+//CRUD habilidades
 const criarHabilidade = async () => {
   if (!novaHabilidadeNome.value) return;
   try {

@@ -48,8 +48,8 @@ const fazerLogin = async () => {
 
     localStorage.setItem('token', resposta.data.token);
     
-    // Verifica se é o email do chefe!
-    if (email.value === 'admin@utfpr.edu.br') { // ⚠️ COLOQUE O SEU E-MAIL DE ADMIN AQUI
+    //email admin
+    if (email.value === 'admin@utfpr.edu.br') { //COLOQUE O SEU E-MAIL DE ADMIN AQUI SE FOR DIFERENTE
       router.push('/admin'); 
     } else {
       router.push('/painel'); 

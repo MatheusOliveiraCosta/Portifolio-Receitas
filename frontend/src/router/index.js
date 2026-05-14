@@ -10,12 +10,12 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView // A raiz do site agora é a vitrine!
+      component: HomeView 
     },
     {
       path: '/login',
       name: 'login',
-      component: LoginView // O login foi para /login
+      component: LoginView 
     },
     {
       path: '/painel',

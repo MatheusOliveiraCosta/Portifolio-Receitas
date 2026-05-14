@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router' // Importamos o arquivo que acabamos de criar
+import router from './router'
 
 const app = createApp(App)
 
-app.use(router) // Conectamos o roteador ao Vue
+app.use(router) //roteador ao Vue
 
 app.mount('#app')

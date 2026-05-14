@@ -1,7 +1,7 @@
 <template>
   <div class="painel-container">
     <header class="cabecalho">
-      <h2>Bem-vindo(a), {{ aluno.nome || 'Carregando...' }} 🧑‍🍳</h2>
+      <h2>Bem-vindo(a) Chefe, {{ aluno.nome || 'Carregando...' }}</h2>
       <button @click="sair" class="btn-sair">Sair do Sistema</button>
     </header>
 
@@ -17,8 +17,8 @@
                 <span class="nota">Nível: {{ item.nivel }}/10</span>
               </div>
               <div class="acoes">
-                <button @click="editarHabilidade(item)" class="btn-edit">✏️</button>
-                <button @click="deletarHabilidade(item.habilidade._id)" class="btn-del">🗑️</button>
+                <button @click="editarHabilidade(item)" class="btn-edit">Editar</button>
+                <button @click="deletarHabilidade(item.habilidade._id)" class="btn-del">Excluir</button>
               </div>
             </li>
           </ul>
@@ -53,8 +53,8 @@
                 <a v-if="receita.link_externo" :href="receita.link_externo" target="_blank" class="link-receita">Acessar Link</a>
               </div>
               <div class="acoes mt-10">
-                <button @click="prepararEdicao(receita)" class="btn-edit">✏️ Editar</button>
-                <button @click="deletarReceita(receita._id)" class="btn-del">🗑️ Excluir</button>
+                <button @click="prepararEdicao(receita)" class="btn-edit">Editar</button>
+                <button @click="deletarReceita(receita._id)" class="btn-del">Excluir</button>
               </div>
             </li>
           </ul>
@@ -134,7 +134,7 @@ const carregarPerfil = async () => {
   }
 };
 
-// ================= FUNÇÕES DE RECEITAS =================
+//Receitas
 const carregarMinhasReceitas = async () => {
   try {
     const resposta = await api.get('/receitas');
@@ -146,12 +146,9 @@ const carregarMinhasReceitas = async () => {
     console.error('Erro ao buscar receitas', erro);
   }
 };
-
+//
 const abrirFormularioReceita = async () => {
   try {
-    // Busca categorias e alunos ao mesmo tempo!
-    // (Atenção: verifique se a rota '/admin/alunos' é permitida para os alunos lerem no seu back-end,
-    // se der erro de permissão, você pode precisar criar uma rota pública para listar os nomes).
     const [resCategorias, resAlunos] = await Promise.all([
       api.get('/publico/categorias'),
       api.get('/publico/alunos')
@@ -159,7 +156,6 @@ const abrirFormularioReceita = async () => {
     
     listaCategorias.value = resCategorias.data;
     
-    // Salva a lista de alunos, mas tira o próprio aluno logado para ele não marcar a si mesmo
     listaColegas.value = resAlunos.data.filter(a => a._id !== aluno.value._id);
     
     mostrarFormReceita.value = true;
@@ -169,16 +165,16 @@ const abrirFormularioReceita = async () => {
 };
 
 const prepararEdicao = async (receita) => {
-  await abrirFormularioReceita(); // Primeiro carrega as categorias e os alunos do banco
+  await abrirFormularioReceita(); 
   
-  receitaEmEdicaoId.value = receita._id; // Avisa o sistema que é uma edição
+  receitaEmEdicaoId.value = receita._id;
   
-  // Preenche os campos com os dados da receita clicada
+  //Preenche os campos com os dados da receita clicada
   novaReceita.value = {
     nome: receita.nome,
     descricao: receita.descricao,
     link_externo: receita.link_externo,
-    // Extrai só os IDs para as caixinhas (checkbox) ficarem marcadas automaticamente
+    //Extrai só os IDs para as caixinhas ficarem marcadas automaticamente
     categorias: receita.categorias ? receita.categorias.map(c => c._id) : [],
     autores: receita.autores ? receita.autores.map(a => a._id) : []
   };
@@ -224,7 +220,7 @@ const deletarReceita = async (id) => {
   }
 };
 
-// ================= FUNÇÕES DE HABILIDADES E LOGOUT =================
+//habilidades e logout
 const abrirFormularioHabilidade = async () => {
   try {
     const resposta = await api.get('/publico/habilidades');
