@@ -1,8 +1,8 @@
 <template>
   <div class="admin-container">
     <header class="cabecalho-admin">
-      <h2>Painel do Administrador</h2>
-      <button @click="sair" class="btn-sair">Sair do Sistema</button>
+      <h2>Painel do Admin</h2>
+      <button @click="sair" class="btn-sair">Sair</button>
     </header>
 
     <main class="conteudo">
@@ -13,7 +13,6 @@
         <button :class="{ ativo: abaAtual === 'habilidades' }" @click="mudarAba('habilidades')">Habilidades</button>
       </div>
 
-      //Alunos
       <section v-if="abaAtual === 'alunos'" class="cartao">
         <h3>Gerenciar Alunos</h3>
         <div class="form-rapido">
@@ -33,7 +32,6 @@
         </ul>
       </section>
 
-      //Categorias
       <section v-if="abaAtual === 'categorias'" class="cartao">
         <h3>Gerenciar Categorias</h3>
         <div class="form-rapido">
@@ -52,7 +50,6 @@
         </ul>
       </section>
 
-      //Habilidades
       <section v-if="abaAtual === 'habilidades'" class="cartao">
         <h3>Gerenciar Habilidades</h3>
         <div class="form-rapido">
@@ -199,7 +196,7 @@ onMounted(() => {
 
 <style scoped>
 .admin-container { max-width: 900px; margin: 0 auto; padding: 20px; }
-.cabecalho-admin { display: flex; justify-content: space-between; align-items: center; background: #333; color: gold; padding: 15px 25px; border-radius: 8px; margin-bottom: 20px; }
+.cabecalho-admin { display: flex; justify-content: space-between; align-items: center; background: #000000; color: rgb(255, 255, 255); padding: 15px 25px; border-radius: 8px; margin-bottom: 20px; }
 .btn-sair { background-color: #ff4d4d; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
 
 .abas { display: flex; gap: 10px; margin-bottom: 20px; }

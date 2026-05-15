@@ -11,5 +11,6 @@ router.get('/', receitaController.listarReceitas);
 router.post('/', verificarToken, receitaController.criarReceita);
 router.put('/:id', verificarToken, receitaController.atualizarReceita);
 router.delete('/:id', verificarToken, receitaController.deletarReceita);
+router.post('/:id/comentarios', verificarToken, receitaController.comentarReceita);
 
 module.exports = router;

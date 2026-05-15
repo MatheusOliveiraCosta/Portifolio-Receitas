@@ -1,8 +1,11 @@
 <template>
   <div class="painel-container">
     <header class="cabecalho">
-      <h2>Bem-vindo(a) Chefe, {{ aluno.nome || 'Carregando...' }}</h2>
-      <button @click="sair" class="btn-sair">Sair do Sistema</button>
+      <h2>Bem-vindo(a), Chefe {{ aluno.nome || 'Carregando...' }}</h2>
+      <div style="display: flex; gap: 10px;">
+        <button @click="router.push('/feed')" class="btn-acao">Feed</button>
+        <button @click="sair" class="btn-sair">Sair</button>
+      </div>
     </header>
 
     <main class="conteudo">
@@ -310,4 +313,6 @@ onMounted(() => {
 .link-receita:hover { text-decoration: underline; }
 .selecao-categorias { margin-bottom: 15px; background: white; padding: 10px; border: 1px solid #ccc; border-radius: 4px; max-height: 100px; overflow-y: auto; }
 .check-categoria { display: block; margin-bottom: 5px; font-size: 0.9em; cursor: pointer; }
+.btn-edit { background: #ff9800; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; margin-right: 10px;}
+.btn-del { background: #f44336; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
 </style>

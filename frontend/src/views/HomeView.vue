@@ -131,7 +131,7 @@ onMounted(() => {
 .titulo-receita { margin: 0 0 10px 0; color: #333; }
 .desc-receita { color: #666; font-size: 0.95rem; flex-grow: 1; }
 .tags-categorias { margin: 10px 0; display: flex; flex-wrap: wrap; gap: 5px; }
-.tag { background: #ffe0b2; color: #000000; font-size: 0.8rem; font-weight: bold; padding: 3px 8px; border-radius: 12px; }
+.tag { background: #865f24; color: #ffffff; font-size: 0.8rem; font-weight: bold; padding: 3px 8px; border-radius: 12px; }
 .autores { font-size: 0.85rem; color: #888; border-top: 1px solid #eee; padding-top: 10px; margin-bottom: 15px; }
 .btn-link { text-align: center; background: #4caf50; color: white; text-decoration: none; padding: 10px; border-radius: 5px; font-weight: bold; }
 
