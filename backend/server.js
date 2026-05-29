@@ -66,6 +66,5 @@ const swaggerOptions = {
     // 3. Onde o Swagger deve procurar as rotas para documentar?
     apis: ['./routes/*.js'], 
 };
-
-const swaggerDocument = require('./swagger.json');
+const swaggerDocument = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
